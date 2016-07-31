@@ -3,12 +3,15 @@ IMGTOOL=build/decb
 DSK=colormax.dsk
 DEL=-$(IMGTOOL) kill $(DSK),$@
 PUT=-$(IMGTOOL) copy $@ $(DSK),$@; decb attr $(DSK),$@ -2 -
-
 ARGS=--6809 --format=decb --pragma=6809,c,cd,m80ext,qrts,forwardrefmax,6800compat --symbols-nolocals --list=$*.lst --map=$*.map --output=$@
 COMMON=$(DSK) DEFS.TXT LOWDEFS.TXT
 
 $(DSK): build/dsk.1987
 	cp build/dsk.1987 $@
+
+MESS_DIR=~/Applications/MacSDLMESS/mame0163
+MESS=$(MESS_DIR)/mess64
+
 
 COLORMAX.BIN: CHROUT2.TXT CHRST.TXT COLORMAX.TXT DISKIO2.TXT GREGSTF2.TXT ICONS.TXT MAIN2.TXT \
 			PATS.TXT PATTERN.TXT PCOPY.TXT TABLES.TXT TITLEPGE.TXT WINDOW2.TXT $(COMMON)
@@ -70,4 +73,7 @@ all: \
 clean: 
 	rm -f *.BIN *.LST *.MAP *.RAW *.SDF *.bin *.lst *.map *.raw *.sdf colormax.dsk
 	rm -rf Debug obj
+
+run : $(DSK)
+	$(MESS) coco3 -rompath $(MESS_DIR)/roms -window -flop1 $< -cfg_directory cfgs/rgb
 
